@@ -1,3 +1,3 @@
 # yass
 
-Yet Another Sudoku Solver.
+Yet Another Sudoku Solver - In Scala.
