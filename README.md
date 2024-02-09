@@ -7,3 +7,9 @@ Yet Another Sudoku Solver - In Scala.
 ```
 scala src/main/scala/Main.scala
 ```
+
+## Feature Requests
+
+* Implement basic puzzle solver with no backtracking
+* Implement backtracking
+* Support different puzzle sizes
