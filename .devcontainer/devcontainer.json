@@ -11,14 +11,16 @@
 			"installMaven": "false",
 			"installGradle": "false"
 		},
-		"ghcr.io/devcontainers-contrib/features/scala-asdf:2": {}
-	}
+		// "ghcr.io/devcontainers-contrib/features/scala-asdf:2": {}
+		"ghcr.io/devcontainers-contrib/features/scala-sdkman:2": {},
+		"ghcr.io/devcontainers-contrib/features/scalacli-sdkman:2": {}
+	},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "java -version",
+	"postCreateCommand": "sdk install sbt"
 
 	// Configure tool-specific properties.
 	// "customizations": {},
