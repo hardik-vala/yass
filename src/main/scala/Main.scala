@@ -17,7 +17,13 @@ case class SudokuBoard(
   }
 }
 
-class SudokuSolver(board: SudokuBoard) {}
+class SudokuSolver {
+
+  def solve(board: SudokuBoard): SudokuBoard = {
+    return board
+  }
+
+}
 
 @main def main(): Unit =
   val b = SudokuBoard(2, Array(
@@ -26,4 +32,6 @@ class SudokuSolver(board: SudokuBoard) {}
     Array(1, 4, 4, 3),
     Array(4, 4, 4, 1),
   ))
-  b.printToConsole() 
+  val solver = SudokuSolver()
+  val solved = solver.solve(b)
+  solved.printToConsole() 
