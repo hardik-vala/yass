@@ -26,12 +26,12 @@ class SudokuSolver {
 }
 
 @main def main(): Unit =
-  val b = SudokuBoard(2, Array(
+  val board = SudokuBoard(2, Array(
     Array(4, 3, 4, 4),
     Array(4, 4, 2, 1),
     Array(1, 4, 4, 3),
     Array(4, 4, 4, 1),
   ))
   val solver = SudokuSolver()
-  val solved = solver.solve(b)
+  val solved = solver.solve(board)
   solved.printToConsole() 
