@@ -10,10 +10,23 @@ case class SudokuBoard(
   }
 
   def printToConsole(): Unit = {
-    board.foreach { row =>
-      row.foreach(num => print(f"$num%1d ")) 
-      println()
-    }
+    val horizontalRuleLength = (dim + n + 1) * 2 - 1
+    board.zipWithIndex.foreach((row, i) => {
+      if (i % n == 0) {
+        println("-" * horizontalRuleLength)
+      }
+
+      row.zipWithIndex.foreach((num, j) =>
+        if (j % n == 0) {
+          print(f"| $num%1d ")
+        } else {
+          print(f"$num%1d ")
+        }
+      )
+      println("|")
+    })
+
+    println("-" * horizontalRuleLength)
   }
 }
 
