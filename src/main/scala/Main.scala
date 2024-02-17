@@ -16,13 +16,14 @@ case class SudokuBoard(
         println("-" * horizontalRuleLength)
       }
 
-      row.zipWithIndex.foreach((num, j) =>
+      row.zipWithIndex.foreach((num, j) => {
+        val numStr = if (num == 0 ) f" " else f"$num%1d"
         if (j % n == 0) {
-          print(f"| $num%1d ")
+          print(f"| $numStr ")
         } else {
-          print(f"$num%1d ")
+          print(f"$numStr ")
         }
-      )
+      })
       println("|")
     })
 
@@ -40,10 +41,10 @@ class SudokuSolver {
 
 @main def main(): Unit =
   val board = SudokuBoard(2, Array(
-    Array(4, 3, 4, 4),
-    Array(4, 4, 2, 1),
-    Array(1, 4, 4, 3),
-    Array(4, 4, 4, 1),
+    Array(4, 3, 4, 0),
+    Array(0, 0, 2, 1),
+    Array(1, 4, 0, 3),
+    Array(0, 0, 4, 1),
   ))
   val solver = SudokuSolver()
   val solved = solver.solve(board)
