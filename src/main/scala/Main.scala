@@ -34,17 +34,40 @@ case class SudokuBoard(
 class SudokuSolver {
 
   def solve(board: SudokuBoard): SudokuBoard = {
-    return board
+    val boardDim: Int = board.n * board.n
+    val boardPossibilities: Array[Array[Set[Int]]] = board.board.map(r => r.map(c => {
+      if (c == 0) {
+        (1 to boardDim).toSet  
+      } else {
+        Set(c)
+      }
+    }))
+    
+    var isSolved = false
+    while (!isSolved) {
+      isSolved = true
+      for (i <- 0 until boardDim) {
+        for (j <- 0 until boardDim) {
+          if (boardPossibilities(i)(j).size > 1) {
+            isSolved = false 
+          }
+        }
+      }
+    }
+
+    // boardPossibilities.foreach(r => r.foreach(c => println(c)))
+
+    board
   }
 
 }
 
 @main def main(): Unit =
   val board = SudokuBoard(2, Array(
-    Array(4, 3, 4, 0),
-    Array(0, 0, 2, 1),
-    Array(1, 4, 0, 3),
-    Array(0, 0, 4, 1),
+    Array(2, 1, 3, 0),
+    Array(4, 3, 0, 2),
+    Array(0, 4, 0, 3),
+    Array(3, 2, 0, 1),
   ))
   val solver = SudokuSolver()
   val solved = solver.solve(board)
