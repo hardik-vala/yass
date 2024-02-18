@@ -1,3 +1,5 @@
+import scala.collection.mutable
+
 case class SudokuBoard(
   n: Int,
   board: Array[Array[Int]]
@@ -29,17 +31,34 @@ case class SudokuBoard(
 
     println("-" * horizontalRuleLength)
   }
+
+  override def equals(obj: Any): Boolean = {
+    obj match {
+      case that: SudokuBoard => n == that.n && boardDeepEqual(board, that.board) 
+      case _ => false  
+    }
+  }
+
+  private def boardDeepEqual(a: Array[Array[Int]], b: Array[Array[Int]]): Boolean = {
+    a.length == b.length && 
+      a.zip(b).forall { case (row1, row2) => 
+        row1.length == row2.length &&
+          row1.zip(row2).forall { case (x1, x2) =>
+            x1 == x2
+          }
+      }
+  }
 }
 
 class SudokuSolver {
 
   def solve(board: SudokuBoard): SudokuBoard = {
     val boardDim: Int = board.n * board.n
-    val boardPossibilities: Array[Array[Set[Int]]] = board.board.map(r => r.map(c => {
+    val boardPossibilities: Array[Array[mutable.Set[Int]]] = board.board.map(r => r.map(c => {
       if (c == 0) {
-        (1 to boardDim).toSet  
+        mutable.Set((1 to boardDim): _*)
       } else {
-        Set(c)
+        mutable.Set(c)
       }
     }))
     
@@ -49,24 +68,41 @@ class SudokuSolver {
       for (i <- 0 until boardDim) {
         for (j <- 0 until boardDim) {
           if (boardPossibilities(i)(j).size > 1) {
-            isSolved = false 
+            isSolved = false
+            resolveRow(boardPossibilities, i, j)
           }
         }
       }
     }
 
-    // boardPossibilities.foreach(r => r.foreach(c => println(c)))
+    SudokuBoard(board.n, convertToBoard(boardPossibilities))
+  }
 
-    board
+  private def resolveRow(
+    boardPossibilities: Array[Array[mutable.Set[Int]]],
+    x: Int,
+    y: Int): Unit = {
+    val boardDim = boardPossibilities.size
+    val cellPossibilities: mutable.Set[Int] = boardPossibilities(x)(y)
+    for (i <- 0 until boardDim) {
+      if (boardPossibilities(x)(i).size == 1) {
+        cellPossibilities -= boardPossibilities(x)(i).toSeq.head
+      }
+    }
+  }
+
+  private def convertToBoard(
+    boardPossibilities: Array[Array[mutable.Set[Int]]]): Array[Array[Int]] = {
+    boardPossibilities.map(r => r.map(c => c.toSeq.head))
   }
 
 }
 
 @main def main(): Unit =
   val board = SudokuBoard(2, Array(
-    Array(2, 1, 3, 0),
+    Array(2, 1, 0, 4),
     Array(4, 3, 0, 2),
-    Array(0, 4, 0, 3),
+    Array(1, 4, 0, 3),
     Array(3, 2, 0, 1),
   ))
   val solver = SudokuSolver()
