@@ -51,4 +51,42 @@ class MainTest extends munit.FunSuite {
     ))
     assertEquals(expected.equals(solved), true)
   }
+
+  test("Solve Sudoku board using column elimination only") {
+    val b = SudokuBoard(2, Array(
+      Array(2, 1, 3, 4),
+      Array(0, 0, 0, 0),
+      Array(1, 4, 2, 3),
+      Array(3, 2, 4, 1),
+    ))
+    val solver = SudokuSolver()
+    val solved = solver.solve(b)
+
+    val expected = SudokuBoard(2, Array(
+      Array(2, 1, 3, 4),
+      Array(4, 3, 1, 2),
+      Array(1, 4, 2, 3),
+      Array(3, 2, 4, 1),
+    ))
+    assertEquals(expected.equals(solved), true)
+  }
+
+  test("Solve Sudoku board using row and column elimination only") {
+    val b = SudokuBoard(2, Array(
+      Array(0, 3, 0, 4),
+      Array(0, 0, 1, 3),
+      Array(3, 1, 4, 2),
+      Array(4, 0, 3, 0),
+    ))
+    val solver = SudokuSolver()
+    val solved = solver.solve(b)
+
+    val expected = SudokuBoard(2, Array(
+      Array(1, 3, 2, 4),
+      Array(2, 4, 1, 3),
+      Array(3, 1, 4, 2),
+      Array(4, 2, 3, 1),
+    ))
+    assertEquals(expected.equals(solved), true)
+  }
 }

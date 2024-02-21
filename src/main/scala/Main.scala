@@ -70,6 +70,7 @@ class SudokuSolver {
           if (boardPossibilities(i)(j).size > 1) {
             isSolved = false
             resolveRow(boardPossibilities, i, j)
+            resolveColumn(boardPossibilities, i, j)
           }
         }
       }
@@ -85,8 +86,23 @@ class SudokuSolver {
     val boardDim = boardPossibilities.size
     val cellPossibilities: mutable.Set[Int] = boardPossibilities(x)(y)
     for (i <- 0 until boardDim) {
-      if (boardPossibilities(x)(i).size == 1) {
+      if (boardPossibilities(x)(i).size == 1 && i != y) {
         cellPossibilities -= boardPossibilities(x)(i).toSeq.head
+      }
+    }
+  }
+
+  private def resolveColumn(
+    boardPossibilities: Array[Array[mutable.Set[Int]]],
+    x: Int,
+    y: Int): Unit = {
+    val cellPossibilities: mutable.Set[Int] = boardPossibilities(x)(y)
+    if (cellPossibilities.size > 1) {
+      val boardDim = boardPossibilities.size
+      for (i <- 0 until boardDim) {
+        if (boardPossibilities(i)(y).size == 1 && i != x) {
+          cellPossibilities -= boardPossibilities(i)(y).toSeq.head
+        }
       }
     }
   }
@@ -96,14 +112,23 @@ class SudokuSolver {
     boardPossibilities.map(r => r.map(c => c.toSeq.head))
   }
 
+  private def printToConsole(boardPossibilities: Array[Array[mutable.Set[Int]]]): Unit = {
+    val boardDim = boardPossibilities.size
+    for (i <- 0 until boardDim) {
+      for (j <- 0 until boardDim) {
+        println(f"(${i}, ${j}) -> {${boardPossibilities(i)(j).mkString(", ")}}")
+      }
+    }
+  }
+
 }
 
 @main def main(): Unit =
   val board = SudokuBoard(2, Array(
-    Array(2, 1, 0, 4),
-    Array(4, 3, 0, 2),
-    Array(1, 4, 0, 3),
-    Array(3, 2, 0, 1),
+    Array(2, 1, 3, 4),
+    Array(0, 0, 0, 0),
+    Array(1, 4, 2, 3),
+    Array(3, 2, 4, 1),
   ))
   val solver = SudokuSolver()
   val solved = solver.solve(board)
