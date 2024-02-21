@@ -71,6 +71,7 @@ class SudokuSolver {
             isSolved = false
             resolveRow(boardPossibilities, i, j)
             resolveColumn(boardPossibilities, i, j)
+            resolveSubsquare(boardPossibilities, i, j, board.n)
           }
         }
       }
@@ -107,6 +108,27 @@ class SudokuSolver {
     }
   }
 
+  private def resolveSubsquare(
+    boardPossibilities: Array[Array[mutable.Set[Int]]],
+    x: Int,
+    y: Int,
+    n: Int): Unit = {
+    val cellPossibilities: mutable.Set[Int] = boardPossibilities(x)(y)
+    if (cellPossibilities.size > 1) {
+      val subSquareTopLeftX = (x / n) * n
+      val subSquareTopLeftY = (y / n) * n
+      for (iDelta <- 0 until n) {
+        val i = subSquareTopLeftX + iDelta
+        for (jDelta <- 0 until n) {
+          val j = subSquareTopLeftY + jDelta
+          if (boardPossibilities(i)(j).size == 1 && i != x && j != y) {
+            cellPossibilities -= boardPossibilities(i)(j).toSeq.head
+          }
+        }
+      }
+    }
+  }
+
   private def convertToBoard(
     boardPossibilities: Array[Array[mutable.Set[Int]]]): Array[Array[Int]] = {
     boardPossibilities.map(r => r.map(c => c.toSeq.head))
@@ -125,10 +147,10 @@ class SudokuSolver {
 
 @main def main(): Unit =
   val board = SudokuBoard(2, Array(
-    Array(2, 1, 3, 4),
-    Array(0, 0, 0, 0),
-    Array(1, 4, 2, 3),
-    Array(3, 2, 4, 1),
+    Array(0, 3, 0, 0),
+    Array(0, 0, 1, 3),
+    Array(3, 1, 4, 2),
+    Array(4, 0, 3, 0),
   ))
   val solver = SudokuSolver()
   val solved = solver.solve(board)
