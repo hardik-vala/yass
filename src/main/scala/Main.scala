@@ -50,6 +50,8 @@ case class SudokuBoard(
   }
 }
 
+class StalledProgressException extends Exception
+
 class SudokuSolver {
 
   def solve(board: SudokuBoard): SudokuBoard = {
@@ -63,18 +65,25 @@ class SudokuSolver {
     }))
     
     var isSolved = false
+    var isBoardUpdated = false
     while (!isSolved) {
       isSolved = true
       for (i <- 0 until boardDim) {
         for (j <- 0 until boardDim) {
           if (boardPossibilities(i)(j).size > 1) {
             isSolved = false
-            resolveRow(boardPossibilities, i, j)
-            resolveColumn(boardPossibilities, i, j)
-            resolveSubsquare(boardPossibilities, i, j, board.n)
+            isBoardUpdated ||= resolveRow(boardPossibilities, i, j)
+            isBoardUpdated ||= resolveColumn(boardPossibilities, i, j)
+            isBoardUpdated ||= resolveSubsquare(boardPossibilities, i, j, board.n)
           }
         }
       }
+
+      if (!isBoardUpdated) {
+        throw new StalledProgressException
+      }
+
+      isBoardUpdated = false
     }
 
     SudokuBoard(board.n, convertToBoard(boardPossibilities))
@@ -83,37 +92,50 @@ class SudokuSolver {
   private def resolveRow(
     boardPossibilities: Array[Array[mutable.Set[Int]]],
     x: Int,
-    y: Int): Unit = {
+    y: Int): Boolean = {
     val boardDim = boardPossibilities.size
     val cellPossibilities: mutable.Set[Int] = boardPossibilities(x)(y)
+    var isBoardUpdated = false
     for (i <- 0 until boardDim) {
       if (boardPossibilities(x)(i).size == 1 && i != y) {
-        cellPossibilities -= boardPossibilities(x)(i).toSeq.head
+        val e = boardPossibilities(x)(i).toSeq.head
+        if (cellPossibilities.contains(e)) {
+          cellPossibilities -= e
+          isBoardUpdated = true
+        }
       }
     }
+    isBoardUpdated
   }
 
   private def resolveColumn(
     boardPossibilities: Array[Array[mutable.Set[Int]]],
     x: Int,
-    y: Int): Unit = {
+    y: Int): Boolean = {
     val cellPossibilities: mutable.Set[Int] = boardPossibilities(x)(y)
+    var isBoardUpdated = false
     if (cellPossibilities.size > 1) {
       val boardDim = boardPossibilities.size
       for (i <- 0 until boardDim) {
         if (boardPossibilities(i)(y).size == 1 && i != x) {
-          cellPossibilities -= boardPossibilities(i)(y).toSeq.head
+          val e = boardPossibilities(i)(y).toSeq.head
+          if (cellPossibilities.contains(e)) {
+            cellPossibilities -= e
+            isBoardUpdated = true
+          }
         }
       }
     }
+    isBoardUpdated
   }
 
   private def resolveSubsquare(
     boardPossibilities: Array[Array[mutable.Set[Int]]],
     x: Int,
     y: Int,
-    n: Int): Unit = {
+    n: Int): Boolean = {
     val cellPossibilities: mutable.Set[Int] = boardPossibilities(x)(y)
+    var isBoardUpdated = false
     if (cellPossibilities.size > 1) {
       val subSquareTopLeftX = (x / n) * n
       val subSquareTopLeftY = (y / n) * n
@@ -122,11 +144,16 @@ class SudokuSolver {
         for (jDelta <- 0 until n) {
           val j = subSquareTopLeftY + jDelta
           if (boardPossibilities(i)(j).size == 1 && i != x && j != y) {
-            cellPossibilities -= boardPossibilities(i)(j).toSeq.head
+            val e = boardPossibilities(i)(j).toSeq.head
+            if (cellPossibilities.contains(e)) {
+              cellPossibilities -= e
+              isBoardUpdated = true
+            }
           }
         }
       }
     }
+    isBoardUpdated
   }
 
   private def convertToBoard(
