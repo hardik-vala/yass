@@ -2,7 +2,19 @@
 
 Yet Another Sudoku Solver - In Scala.
 
-## Run
+## Development
+
+### Installation
+
+Open this project in the devcontainer and then run,
+
+```
+sdk install sbt
+```
+
+(Doesn't work as a `postCreateCommand` in `.devcontainer/devcontainer.json` for some reason.)
+
+### Run
 
 You can compile code with `sbt compile`, run it with `sbt run`, test it with `sbt test`, and `sbt console` will start a Scala 3 REPL.
 

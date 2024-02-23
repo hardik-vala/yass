@@ -20,7 +20,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "sdk install sbt"
+	// "postCreateCommand": "sdk install sbt"
 
 	// Configure tool-specific properties.
 	// "customizations": {},
