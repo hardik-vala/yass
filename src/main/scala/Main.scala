@@ -169,7 +169,6 @@ class SudokuSolver {
       }
     }
   }
-
 }
 
 @main def main(): Unit =
