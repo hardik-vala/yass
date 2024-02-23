@@ -33,6 +33,19 @@ class MainTest extends munit.FunSuite {
     assertEquals(b.equals(solved), true)
   }
 
+  test("Unsolvable Sudoku board throws exception") {
+    val b = SudokuBoard(2, Array(
+      Array.fill(4)(0),
+      Array.fill(4)(0),
+      Array.fill(4)(0),
+      Array.fill(4)(0),
+    ))
+    val solver = SudokuSolver()
+    intercept[StalledProgressException] {
+      solver.solve(b)
+    }
+  }
+
   test("Solve Sudoku board using row elimination only") {
     val b = SudokuBoard(2, Array(
       Array(2, 1, 0, 4),

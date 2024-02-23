@@ -79,7 +79,7 @@ class SudokuSolver {
         }
       }
 
-      if (!isBoardUpdated) {
+      if (!isBoardUpdated && !isSolved) {
         throw new StalledProgressException
       }
 
