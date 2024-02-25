@@ -52,7 +52,7 @@ case class SudokuBoard(
   }
 }
 
-class StalledProgressException extends Exception
+class NoProgressException extends Exception
 
 class SudokuSolver {
 
@@ -82,7 +82,7 @@ class SudokuSolver {
       }
 
       if (!isBoardUpdated && !isSolved) {
-        throw new StalledProgressException
+        throw new NoProgressException
       }
 
       isBoardUpdated = false
@@ -175,7 +175,7 @@ class SudokuSolver {
 
 @main def main(): Unit =
   val board = SudokuBoard(2, Array(
-    Array(1, 0, 4, 0),
+    Array(0, 0, 4, 0),
     Array(3, 0, 2, 0),
     Array(0, 3, 0, 2),
     Array(0, 0, 3, 0),

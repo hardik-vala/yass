@@ -41,7 +41,7 @@ class MainTest extends munit.FunSuite {
       Array.fill(4)(0),
     ))
     val solver = SudokuSolver()
-    intercept[StalledProgressException] {
+    intercept[NoProgressException] {
       solver.solve(b)
     }
   }
