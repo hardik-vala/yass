@@ -4,6 +4,8 @@ case class SudokuBoard(
   n: Int,
   board: Array[Array[Int]]
 ) {
+  require(n > 1, f"Board must have a dimentions greater than one")
+
   val dim = n * n
   require(board.length == dim, f"Board must have ${dim} rows")
 
@@ -172,16 +174,11 @@ class SudokuSolver {
 }
 
 @main def main(): Unit =
-  val board = SudokuBoard(3, Array(
-    Array(7, 0, 9, 3, 5, 6, 0, 1, 0),
-    Array(5, 0, 0, 2, 0, 1, 8, 9, 7),
-    Array(4, 2, 1, 0, 0, 0, 0, 0, 5),
-    Array(6, 4, 0, 0, 3, 0, 0, 8, 0),
-    Array(9, 7, 0, 4, 6, 5, 1, 0, 3),
-    Array(3, 1, 2, 0, 9, 0, 4, 0, 0),
-    Array(2, 6, 4, 5, 1, 3, 0, 0, 0),
-    Array(0, 9, 7, 6, 0, 4, 5, 0, 1),
-    Array(1, 5, 0, 0, 0, 7, 0, 4, 2),
+  val board = SudokuBoard(2, Array(
+    Array(1, 0, 4, 0),
+    Array(3, 0, 2, 0),
+    Array(0, 3, 0, 2),
+    Array(0, 0, 3, 0),
   ))
   val solver = SudokuSolver()
   val solved = solver.solve(board)
