@@ -92,17 +92,22 @@ class SudokuSolver {
         }
       }
 
+      // No progress was made with the techniques above.
       if (!isBoardUpdated && !isSolved) {
+        // Find a cell with multiples possibilities.
         for (i <- 0 until boardDim) {
           for (j <- 0 until boardDim) {
             if (boardPossibilities(i)(j).size > 1) {
               val cellPossibilities = boardPossibilities(i)(j).toSeq
+              // Iterate through the the different possibilities.
               for (k <- 0 until cellPossibilities.size) {
+                // Make a guess for the cell and recurse.
                 val b = convertToBoard(board.n, boardPossibilities, i, j, cellPossibilities(k))
                 try {
                   val result = solve(b)
                   return result
                 } catch {
+                  // Guess was wrong and generated a board with a violation.
                   case ex: PuzzleIntegrityException => {}
                 }
               }
