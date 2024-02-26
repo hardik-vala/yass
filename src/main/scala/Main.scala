@@ -1,5 +1,16 @@
 import scala.collection.mutable
 
+@main def main(): Unit =
+  val board = SudokuBoard(2, Array(
+    Array(0, 0, 4, 0),
+    Array(3, 0, 2, 0),
+    Array(0, 3, 0, 2),
+    Array(0, 0, 3, 0),
+  ))
+  val solver = SudokuSolver()
+  val solved = solver.solve(board)
+  solved.printToConsole() 
+
 case class SudokuBoard(
   n: Int,
   board: Array[Array[Int]]
@@ -247,14 +258,3 @@ class SudokuSolver {
     }
   }
 }
-
-@main def main(): Unit =
-  val board = SudokuBoard(2, Array(
-    Array(0, 0, 4, 0),
-    Array(3, 0, 2, 0),
-    Array(0, 3, 0, 2),
-    Array(0, 0, 3, 0),
-  ))
-  val solver = SudokuSolver()
-  val solved = solver.solve(board)
-  solved.printToConsole() 
