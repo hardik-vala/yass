@@ -252,4 +252,64 @@ class MainTest extends munit.FunSuite {
     ))
     assertEquals(expected.equals(solved), true)
   }
+
+  // Generated using https://sudokutodo.com/generator.
+  test("Solve 9x9 Sudoku board (medium)") {
+    val b = SudokuBoard(3, Array(
+      Array(0, 0, 7, 0, 0, 0, 5, 3, 6),
+      Array(2, 1, 4, 6, 3, 0, 7, 0, 0),
+      Array(3, 6, 0, 9, 8, 7, 0, 2, 0),
+      Array(9, 7, 8, 3, 0, 1, 0, 6, 4),
+      Array(6, 0, 0, 0, 0, 8, 1, 0, 3),
+      Array(0, 3, 1, 4, 6, 0, 0, 9, 7),
+      Array(0, 2, 3, 0, 4, 0, 9, 7, 8),
+      Array(7, 8, 0, 2, 1, 3, 0, 4, 0),
+      Array(0, 0, 6, 8, 0, 9, 0, 0, 2),
+    ))
+    val solver = SudokuSolver()
+    val solved = solver.solve(b)
+
+    val expected = SudokuBoard(3, Array(
+      Array(8, 9, 7, 1, 2, 4, 5, 3, 6),
+      Array(2, 1, 4, 6, 3, 5, 7, 8, 9),
+      Array(3, 6, 5, 9, 8, 7, 4, 2, 1),
+      Array(9, 7, 8, 3, 5, 1, 2, 6, 4),
+      Array(6, 4, 2, 7, 9, 8, 1, 5, 3),
+      Array(5, 3, 1, 4, 6, 2, 8, 9, 7),
+      Array(1, 2, 3, 5, 4, 6, 9, 7, 8),
+      Array(7, 8, 9, 2, 1, 3, 6, 4, 5),
+      Array(4, 5, 6, 8, 7, 9, 3, 1, 2),
+    ))
+    assertEquals(expected.equals(solved), true)
+  }
+
+  // Generated using https://sudokutodo.com/generator.
+  test("Solve 9x9 Sudoku board (hard)") {
+    val b = SudokuBoard(3, Array(
+      Array(0, 5, 6, 0, 2, 4, 0, 0, 8),
+      Array(8, 0, 0, 0, 0, 5, 1, 0, 2),
+      Array(2, 0, 0, 0, 8, 0, 0, 0, 3),
+      Array(5, 1, 0, 0, 0, 8, 4, 0, 0),
+      Array(0, 0, 4, 0, 5, 0, 7, 8, 0),
+      Array(0, 0, 7, 0, 6, 2, 3, 0, 0),
+      Array(1, 0, 2, 8, 7, 0, 0, 6, 0),
+      Array(0, 6, 0, 2, 0, 0, 0, 9, 0),
+      Array(7, 9, 0, 5, 0, 0, 0, 3, 1),
+    ))
+    val solver = SudokuSolver()
+    val solved = solver.solve(b)
+
+    val expected = SudokuBoard(3, Array(
+      Array(3, 5, 6, 1, 2, 4, 9, 7, 8),
+      Array(8, 7, 9, 6, 3, 5, 1, 4, 2),
+      Array(2, 4, 1, 9, 8, 7, 6, 5, 3),
+      Array(5, 1, 3, 7, 9, 8, 4, 2, 6),
+      Array(6, 2, 4, 3, 5, 1, 7, 8, 9),
+      Array(9, 8, 7, 4, 6, 2, 3, 1, 5),
+      Array(1, 3, 2, 8, 7, 9, 5, 6, 4),
+      Array(4, 6, 5, 2, 1, 3, 8, 9, 7),
+      Array(7, 9, 8, 5, 4, 6, 2, 3, 1),
+    ))
+    assertEquals(expected.equals(solved), true)
+  }
 }
