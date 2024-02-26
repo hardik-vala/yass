@@ -2,9 +2,7 @@
 
 Yet Another Sudoku Solver - In Scala.
 
-## Development
-
-### Installation
+## Installation
 
 Open this project in the devcontainer and then run,
 
@@ -14,10 +12,30 @@ sdk install sbt
 
 (Doesn't work as a `postCreateCommand` in `.devcontainer/devcontainer.json` for some reason.)
 
-### Run
+## Run
 
-You can compile code with `sbt compile`, run it with `sbt run`, test it with `sbt test`, and
-`sbt console` will start a Scala 3 REPL.
+Update the puzzle in the main function in `Main.scala`,
+
+```scala
+// Update this object.
+val board = SudokuBoard(2, Array(
+  Array(0, 0, 4, 0),
+  Array(3, 0, 2, 0),
+  Array(0, 3, 0, 2),
+  Array(0, 0, 3, 0),
+))
+val solver = SudokuSolver()
+...
+```
+
+* You can compile code with `sbt compile`
+* Run it with `sbt run`
+
+## Test
+
+```
+sbt test
+```
 
 ## Resources
 
