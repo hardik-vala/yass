@@ -141,6 +141,34 @@ class MainTest extends munit.FunSuite {
     assertEquals(expected.equals(solved), true)
   }
 
+  test("Row-level integrity violation throws exception") {
+    val b = SudokuBoard(2, Array(
+      Array(4, 0, 4, 0),
+      Array(3, 0, 2, 0),
+      Array(0, 3, 0, 2),
+      Array(0, 0, 3, 0),
+    ))
+    val solver = SudokuSolver()
+
+    intercept[PuzzleIntegrityException] {
+      solver.solve(b)
+    }
+  }
+
+  test("Column-level integrity violation throws exception") {
+    val b = SudokuBoard(2, Array(
+      Array(1, 0, 4, 0),
+      Array(3, 0, 2, 0),
+      Array(0, 3, 0, 2),
+      Array(0, 2, 3, 0),
+    ))
+    val solver = SudokuSolver()
+
+    intercept[PuzzleIntegrityException] {
+      solver.solve(b)
+    }
+  }
+
   test("Solve 9x9 Sudoku board with one missing entry") {
     val b = SudokuBoard(3, Array(
       Array(8, 2, 3, 7, 5, 1, 4, 6, 9),

@@ -52,6 +52,8 @@ case class SudokuBoard(
   }
 }
 
+class PuzzleIntegrityException(msg: String) extends Exception(msg)
+
 class NoProgressException extends Exception
 
 class SudokuSolver {
@@ -97,16 +99,29 @@ class SudokuSolver {
     y: Int): Boolean = {
     val boardDim = boardPossibilities.size
     val cellPossibilities: mutable.Set[Int] = boardPossibilities(x)(y)
+    val rowCandidates = mutable.Set((1 to boardDim): _*)
     var isBoardUpdated = false
     for (i <- 0 until boardDim) {
       if (boardPossibilities(x)(i).size == 1 && i != y) {
         val e = boardPossibilities(x)(i).toSeq.head
+        
         if (cellPossibilities.contains(e)) {
           cellPossibilities -= e
           isBoardUpdated = true
         }
+
+        if (rowCandidates.contains(e)) {
+          rowCandidates -= e
+        } else {
+          throw new PuzzleIntegrityException(f"Number ${e} is duplicated in row ${x}")
+        }
       }
     }
+
+    if (cellPossibilities.isEmpty) {
+      throw new PuzzleIntegrityException(f"(${x}, ${y}) has no possibilities")
+    }
+
     isBoardUpdated
   }
 
@@ -118,16 +133,29 @@ class SudokuSolver {
     var isBoardUpdated = false
     if (cellPossibilities.size > 1) {
       val boardDim = boardPossibilities.size
+      val columnCandidates = mutable.Set((1 to boardDim): _*)
       for (i <- 0 until boardDim) {
         if (boardPossibilities(i)(y).size == 1 && i != x) {
           val e = boardPossibilities(i)(y).toSeq.head
+
           if (cellPossibilities.contains(e)) {
             cellPossibilities -= e
             isBoardUpdated = true
           }
+
+          if (columnCandidates.contains(e)) {
+            columnCandidates -= e
+          } else {
+            throw new PuzzleIntegrityException(f"Number ${e} is duplicated in column ${y}")
+          }
         }
       }
     }
+
+    if (cellPossibilities.isEmpty) {
+      throw new PuzzleIntegrityException(f"(${x}, ${y}) has no possibilities")
+    }
+
     isBoardUpdated
   }
 
@@ -136,25 +164,41 @@ class SudokuSolver {
     x: Int,
     y: Int,
     n: Int): Boolean = {
+    val boardDim = n * n
     val cellPossibilities: mutable.Set[Int] = boardPossibilities(x)(y)
     var isBoardUpdated = false
     if (cellPossibilities.size > 1) {
       val subSquareTopLeftX = (x / n) * n
       val subSquareTopLeftY = (y / n) * n
+      val subsquareCandidates = mutable.Set((1 to boardDim): _*)
       for (iDelta <- 0 until n) {
         val i = subSquareTopLeftX + iDelta
         for (jDelta <- 0 until n) {
           val j = subSquareTopLeftY + jDelta
           if (boardPossibilities(i)(j).size == 1 && i != x && j != y) {
             val e = boardPossibilities(i)(j).toSeq.head
+
             if (cellPossibilities.contains(e)) {
               cellPossibilities -= e
               isBoardUpdated = true
+            }
+
+            if (subsquareCandidates.contains(e)) {
+              subsquareCandidates -= e
+            } else {
+              throw new PuzzleIntegrityException(
+                f"Number ${e} is duplicated in subsquare containing (${x}, ${y})"
+              )
             }
           }
         }
       }
     }
+
+    if (cellPossibilities.isEmpty) {
+      throw new PuzzleIntegrityException(f"(${x}, ${y}) has no possibilities")
+    }
+    
     isBoardUpdated
   }
 
