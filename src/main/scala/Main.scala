@@ -54,8 +54,6 @@ case class SudokuBoard(
 
 class PuzzleIntegrityException(msg: String) extends Exception(msg)
 
-class NoProgressException extends Exception
-
 class SudokuSolver {
 
   def solve(board: SudokuBoard): SudokuBoard = {
@@ -84,13 +82,28 @@ class SudokuSolver {
       }
 
       if (!isBoardUpdated && !isSolved) {
-        throw new NoProgressException
+        for (i <- 0 until boardDim) {
+          for (j <- 0 until boardDim) {
+            if (boardPossibilities(i)(j).size > 1) {
+              val cellPossibilities = boardPossibilities(i)(j).toSeq
+              for (k <- 0 until cellPossibilities.size) {
+                val b = convertToBoard(board.n, boardPossibilities, i, j, cellPossibilities(k))
+                try {
+                  val result = solve(b)
+                  return result
+                } catch {
+                  case ex: PuzzleIntegrityException => {}
+                }
+              }
+            }
+          }
+        }
       }
 
       isBoardUpdated = false
     }
 
-    SudokuBoard(board.n, convertToBoard(boardPossibilities))
+    convertToBoard(board.n, boardPossibilities)
   }
 
   private def resolveRow(
@@ -203,8 +216,26 @@ class SudokuSolver {
   }
 
   private def convertToBoard(
-    boardPossibilities: Array[Array[mutable.Set[Int]]]): Array[Array[Int]] = {
-    boardPossibilities.map(r => r.map(c => c.toSeq.head))
+    n: Int, boardPossibilities: Array[Array[mutable.Set[Int]]]): SudokuBoard = {
+    val board = boardPossibilities.map(r => r.map(c => {
+      if (c.size > 1) {
+        0
+      } else {
+        c.toSeq.head 
+      }
+    }))
+    SudokuBoard(n, board)
+  }
+
+  private def convertToBoard(
+    n: Int, 
+    boardPossibilities: Array[Array[mutable.Set[Int]]],
+    x: Int,
+    y: Int,
+    e: Int): SudokuBoard = {
+    val boardPossibilitiesCopy = boardPossibilities.map(r => r.map(c => c))
+    boardPossibilitiesCopy(x)(y) = mutable.Set(e)
+    convertToBoard(n, boardPossibilitiesCopy)
   }
 
   private def printToConsole(boardPossibilities: Array[Array[mutable.Set[Int]]]): Unit = {
